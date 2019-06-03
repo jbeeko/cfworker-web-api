@@ -225,7 +225,7 @@ Part I [demonstrated](https://github.com/jbeeko/cfworker-hello-world/#deploying-
 * the serverless framework
 * Terraform. 
 
-The Terraform and serverless framework seem quite heavy for simple scenarios. The raw Cloudflare seems like it would be a bit of work to integrate into the existing work flow. 
+The Terraform and serverless framework seem quite heavy for simple scenarios. The raw Cloudflare looks like it would be a chunck of work to integrate into the existing work flow. 
 
 Fortunately there is the excellent [cloudflare-worker-webpack-plugin](https://www.npmjs.com/package/cloudflare-worker-webpack-plugin) which does the hard work of integrating to the CF API and exposes that as a WebPack plugin. All we need to do is add a configuration section to our existing webpack.config.js and then this command:
 
