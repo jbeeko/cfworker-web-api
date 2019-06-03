@@ -82,7 +82,7 @@ addEventListener (fun (e:FetchEvent) ->
 
 ```
 #### A few comments on routing
-The router is implemented as a pattern match statement on the HTTP verb and the path. This approach is lifted from the ReasonML router ["pattern match your way to glory"](https://reasonml.github.io/reason-react/docs/en/router.html#match-a-route). One thing that stands out is how simple and approachable this code is. Given a HTTP verb and a path represented as a collection of strings we pattern match. But despite this simplicity is is quite powerful.
+The router is implemented as a pattern match statement on the HTTP verb and the path. This approach is lifted from the ReasonML router ["pattern match your way to glory"](https://reasonml.github.io/reason-react/docs/en/router.html#match-a-route). One thing that stands out is how simple and approachable this code is. Given a HTTP verb and a path represented as a collection of strings we pattern match. But despite this simplicity it is quite powerful.
 
 **Paths can be any length**- and any segment of it may be "wild carded" using `_`. 
 
