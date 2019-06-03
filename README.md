@@ -150,7 +150,7 @@ type RouteSpec = {
 and route by matching on `auth` where needed without breaking any code. The disadvantage is that the router does not look as clean and simple. 
 
 ## Contact CRUD Operations
-Cloudflare Workers support a data store called [Workers KV](https://developers.cloudflare.com/workers/kv/). This is a globally distributed highly eventually consistent key-value store. Key parameters are: 
+Cloudflare Workers support a data store called [Workers KV](https://developers.cloudflare.com/workers/kv/). This is a globally distributed highly read-biased, eventually consistent key-value store. Key parameters are: 
 * 100,000 key reads per second 
 * 1 write per second
 * global write and delete propagation within 10 seconds
