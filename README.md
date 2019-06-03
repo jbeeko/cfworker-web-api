@@ -264,7 +264,7 @@ These are used to provide the `CLOUDFLARE_AUTH_EMAIL` and the `CLOUDFLARE_AUTH_K
 > NOTE: The `cloudworker` local emulator can be configured to support Worker KV. However the CLI deployment works so well and is so fast that I've not bothered.
 
 ### Debugging Workers
-Debugging support for Workers can be a bit tricky. If the `worker.bndl.js` file is deployed manually as [described](https://github.com/jbeeko/cfworker-hello-world#deploying-manually) in part one then the log in the portal will show the JS console messages. But if deployed to Cloudflare environment then errors in the worker will result in a generic page with no debugging information. Various tips and tricks are discussed [here.](https://developers.cloudflare.com/workers/writing-workers/debugging-tips/)
+Debugging support for Workers can be a bit tricky. If the `worker.bndl.js` file is deployed manually as [described](https://github.com/jbeeko/cfworker-hello-world#deploying-manually) here, the portal will show the JS console messages. But if deployed to Cloudflare environment then errors in the worker will result in a generic page with no debugging information. Various tips and tricks are discussed [here.](https://developers.cloudflare.com/workers/writing-workers/debugging-tips/)
 
 ## Protecting your API
 There are three approaches to protecting your API from abuse:
