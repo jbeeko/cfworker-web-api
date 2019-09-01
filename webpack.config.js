@@ -1,4 +1,4 @@
-const CloudflareWorkerPlugin = require('cloudflare-worker-webpack-plugin');
+const CloudflareWorkerPlugin = require('cloudflare-workers-webpack-plugin');
 
 module.exports = env => {
     var env = env
