@@ -219,13 +219,13 @@ postContact req  =
 
 > NOTE: I've only used the Worker KV store with a deployment to Cloudflare itself and not with the Cloudworker local emulator. 
 
-## Deploying from CLI
+## Deploying To Cloudfare from CLI
 Part I [demonstrated](https://github.com/jbeeko/cfworker-hello-world/#deploying-manually) deploying a worker by pasting the JavaScript into an online editor. That works but better is deploying as part of a build process. Cloudflare offers 3 [options](https://developers.cloudflare.com/workers/deploying-workers/):
 * a Cloudflare HTTP API
 * the serverless framework
 * Terraform. 
 
-The Terraform and serverless framework seem quite heavy for simple scenarios. The raw Cloudflare looks like it would be a chunck of work to integrate into the existing work flow. 
+The Terraform and serverless framework seem quite heavy for simple scenarios. The raw Cloudflare looks like it would be a chunk of work to integrate into the existing work flow. 
 
 Fortunately there is the excellent [cloudflare-worker-webpack-plugin](https://www.npmjs.com/package/cloudflare-worker-webpack-plugin) which does the hard work of integrating to the CF API and exposes that as a WebPack plugin. All we need to do is add a configuration section to our existing webpack.config.js and then this command:
 
@@ -257,7 +257,7 @@ env.CF_EMAIL,
 env.CF_KEY,
 ```
 
-These are used to provide the `CLOUDFLARE_AUTH_EMAIL` and the `CLOUDFLARE_AUTH_KEY` respectively. This is done by using the WebPack [environment variables feature](https://webpack.js.org/guides/environment-variables/). The actual values can be provided on the command line directly or pulled from a user environment. In the command line show those values are defined in the `.bash.profile` file. 
+These are used to provide the `CLOUDFLARE_AUTH_EMAIL` and the `CLOUDFLARE_AUTH_KEY` respectively. This is done by using the WebPack [environment variables feature](https://webpack.js.org/guides/environment-variables/). The actual values can be provided on the command line directly or pulled from a user environment. In the command line show those values are defined in the `.bash_profile` file. 
 
 > **NOTE:** Currently you can only deploy a worker to a domain you own that you have moved to Cloudflare. However you will soon be able to host worker on a subdomain of `workers.com`. So go read about it and [claim your workers.com domain now](https://blog.cloudflare.com/announcing-workers-dev/).
 
@@ -348,25 +348,13 @@ With the exception of the REST Client VSCode extension these are the same pre-re
 
 **Install**- dependancies and node modules with: `yarn install`
 
-**Test**- that the local cloudworker host is installed correctly with: `cloudworker -r Worker.bndl.js`
-
-**Visit**- `http://localhost:3000/stats` and get back something like:
-```
-Hello World!
-
-Colo: ? Cntry: ?
-TLSVersion: ? TLSCiper: ?
-Count: 2 Ave 6.116784
-Time: Mon Feb 18 2019 14:55:43 GMT-0800 (Pacific Standard Time)
-```
-
 **Build and deploy to Cloudflare** - at any time build and deploy with:
 
 `yarn webpack --env.CF_KEY=<your CF key> --env.CF_EMAIL=<your CF email>`
 
 Assuming you have a Worker enabled Cloudflare account his will connect to Cloudflare, remove any existing routes, create routes and upload the `Workers.bndl.js` as the worker to run on the routes specified. There is no need to pre-configure workers in anyway.
 
-If successful you will see:
+If successful the terminal will show the following:
 ```
 ...
 Looking up zone-id for 'rec-room.io'
@@ -376,7 +364,7 @@ Success! Cloudflare worker deployed
 Removing existing routes: rec-room.io/*
 ...
 ```
-in the terminal. The worker is now live on the routes defined in the `webpack.config.js` file. Notice that that the deploy step is only a second or so. In fact this is so good I've given up deploying to the local cloud worker emulator.
+The worker is now live on the routes defined in the `webpack.config.js` file. Notice that that the deploy step is only a second or so. In fact this is so good I've given up deploying to the local cloud worker emulator.
 
 **Build and deploy locally**- after edits with: `yarn webpack`. In the terminal you will see:
 ```
@@ -394,7 +382,7 @@ And in the cloudworker terminal window you will see the local worker has detecte
 Changes to the worker script detected - reloading...
 Successfully reloaded!
 ```
-> NOTE - the cloudworker will support the Worker KV but additonal configuration work is needed. 
+> NOTE - the cloudworker will support the Worker KV but additional configuration work is needed. 
 
 
 **Test**- If the VSCode REST Client extension is installed you can test the API by opening testing.rest. That file contains a series of http requests. They can be executed by clicking on the 'Send Request' hover link. If VSCode is not available use cURL PostMan or any other API test tool.

@@ -63,6 +63,42 @@ let verb (r:CFWRequest) =
     | "CONNECT" -> CONNECT
     | _ -> UNDEFINED
 
+type KeyQuery = {
+  prefix: string
+  cursor: string option
+}
+
+type Key = {
+  name: string
+  expiration: int option
+}
+
+type KeyQueryResponse1 = {
+  keys: Key list
+  list_complete: bool
+  cursor: string option
+}
+
+type ResultInfo = {
+  count: int
+  cursor: string option
+}
+
+
+type KeyQueryResponse = {
+  result: Key list
+  success: bool
+  errors: string list
+  messages: string list
+  result_info: ResultInfo
+}
+
+
+[<Emit("KVBinding.list()")>]
+let kvKeyListing() : Promise<KeyQueryResponse> = jsNative
+
+[<Emit("KVBinding.list($0)")>]
+let kvKeyQuery() : Promise<string> = jsNative
 
 [<Emit("KVBinding.get($0)")>]
 let kvGet(key:string) : Promise<string option> = jsNative

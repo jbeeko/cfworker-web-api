@@ -30,7 +30,11 @@ and private getContact req i =
         | Some json -> return newResponse json "200"
     }
 and private getContacts req  =
-    newResponse "Not implmemented, shoud get all keys from KV and fetch all contacts" "200" |> wrap
+    promise {
+        let! keys = kvKeyListing()
+        let len = keys.success.ToString()
+        return newResponse len "200"
+    }
 
 and private postContact req  =
     promise {

@@ -52,3 +52,12 @@ DELETE  {{base}}/contacts/12
 
 ###
 GET {{base}}/contacts/12
+
+
+###
+GET {{base}}/contacts
+
+
+
+
+
