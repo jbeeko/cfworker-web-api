@@ -94,18 +94,18 @@ type KeyQueryResponse = {
 }
 
 
-[<Emit("KVBinding.list()")>]
+[<Emit("KVStore.list()")>]
 let kvKeyListing() : Promise<KeyQueryResponse> = jsNative
 
-[<Emit("KVBinding.list($0)")>]
+[<Emit("KVStore.list($0)")>]
 let kvKeyQuery() : Promise<string> = jsNative
 
-[<Emit("KVBinding.get($0)")>]
+[<Emit("KVStore.get($0)")>]
 let kvGet(key:string) : Promise<string option> = jsNative
 
-[<Emit("KVBinding.put($0,$1)")>]
+[<Emit("KVStore.put($0,$1)")>]
 let kvPut(key:string) (value:string) : Promise<unit> = jsNative
 
-[<Emit("KVBinding.delete($0)")>]
+[<Emit("KVStore.delete($0)")>]
 let kvDelete(key:string) : Promise<unit> = jsNative
 
