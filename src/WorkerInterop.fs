@@ -1,14 +1,17 @@
-// Common JS Interop code and utility functions
-
 module WorkersInterop
-open System
+
 open System.Text.RegularExpressions
 
 open Fable.Core
-open Fable.Import.Browser
-open Fable.Import.JS
+open Fable.Core.JS
+open Browser.Types
+open Fetch
 
 
+type [<AllowNullLiteral>] FetchEvent =
+  inherit Event
+  abstract request: Request with get, set
+  abstract respondWith: response: U2<Promise<Response>, Response> -> Promise<Response>
 
 [<Emit("addEventListener('fetch', $0)")>]
 let addEventListener (e:FetchEvent->Promise<Response>) : unit = jsNative
@@ -29,7 +32,7 @@ and CFDetails = {
 let wrap x = promise {return x}
 
 let path (r:CFWRequest)=
-    match Regex.Split((Uri r.url).AbsolutePath.ToLower(), "\/") with
+    match Regex.Split((System.Uri r.url).AbsolutePath.ToLower(), "\/") with
     | [|"";""|] -> [||]   // this is for paths http://somthing.com/ and http://something.com
     | p -> p.[1..]        // becuase the first path element is always ""
     |> List.ofArray
@@ -62,50 +65,4 @@ let verb (r:CFWRequest) =
     | "TRACE" -> TRACE
     | "CONNECT" -> CONNECT
     | _ -> UNDEFINED
-
-type KeyQuery = {
-  prefix: string
-  cursor: string option
-}
-
-type Key = {
-  name: string
-  expiration: int option
-}
-
-type KeyQueryResponse1 = {
-  keys: Key list
-  list_complete: bool
-  cursor: string option
-}
-
-type ResultInfo = {
-  count: int
-  cursor: string option
-}
-
-
-type KeyQueryResponse = {
-  result: Key list
-  success: bool
-  errors: string list
-  messages: string list
-  result_info: ResultInfo
-}
-
-
-[<Emit("KVBinding.list()")>]
-let kvKeyListing() : Promise<KeyQueryResponse> = jsNative
-
-[<Emit("KVBinding.list($0)")>]
-let kvKeyQuery() : Promise<string> = jsNative
-
-[<Emit("KVBinding.get($0)")>]
-let kvGet(key:string) : Promise<string option> = jsNative
-
-[<Emit("KVBinding.put($0,$1)")>]
-let kvPut(key:string) (value:string) : Promise<unit> = jsNative
-
-[<Emit("KVBinding.delete($0)")>]
-let kvDelete(key:string) : Promise<unit> = jsNative
 

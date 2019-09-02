@@ -1,6 +1,7 @@
 module Contacts
-open WorkersInterop
 open Thoth.Json
+
+open WorkersInterop
 
 type Contact = {
     id: string
@@ -11,6 +12,8 @@ type Contact = {
 } with
     member x.Name = System.String.Join(" ", [|x.FirstName.Trim(); x.FamillyName.Trim()|])
 let  contactDecoder = Decode.Auto.generateDecoder<Contact>()
+let nsGet = KVStore.get "eac7f3cf92a24ebab3b900a86df7d787"
+
 
 // Handle the request returning a ServiceWorker Response promise
 let rec routeRequest (verb: Verb) (path: string list) (req: CFWRequest) =
@@ -24,16 +27,15 @@ let rec routeRequest (verb: Verb) (path: string list) (req: CFWRequest) =
 
 and private getContact req i =
     promise {
-        let! getRes = kvGet i 
-        match getRes with
+        match! KVStore.get i with 
         | None -> return newResponse (sprintf "No contact with id %s" i) "404"
         | Some json -> return newResponse json "200"
     }
 and private getContacts req  =
     promise {
-        let! keys = kvKeyListing()
-        let len = keys.success.ToString()
-        return newResponse len "200"
+        // let! keys = kvKeyListing()
+        // let len = keys.success.ToString()
+        return newResponse "len" "200"
     }
 
 and private postContact req  =
@@ -42,24 +44,23 @@ and private postContact req  =
          let contact = Decode.fromString contactDecoder body
          match contact with
          | Ok c -> 
-            do! kvPut c.id body
+            do! KVStore.put c.id body
             return newResponse body "200"
          | Error e -> return newResponse (sprintf "Unable to process: %s because: %O" body e) "200"
     }
 
 and private putContact req i =
     promise {
-         let! body = (req.text())
-         let updatedContact = Decode.fromString contactDecoder body
-         let! existingData = kvGet i
-        match existingData with
+        let! body = (req.text())
+        let updatedContact = Decode.fromString contactDecoder body
+        match! KVStore.get i with
         | Some d -> 
             let existingContact = Decode.fromString contactDecoder d
             match existingContact, updatedContact with
             | Ok existing, Ok updated -> 
                if existing.id = i 
                then
-                   do! kvPut i body
+                   do! KVStore.put i body
                    return newResponse body "200"
                else return newResponse (sprintf "Unable to process put.") "400"             
             | _,_ -> return newResponse (sprintf "Unable to process put.") "400"
@@ -68,11 +69,10 @@ and private putContact req i =
 
 and private deleteContact req i  =
     promise {
-        let! getRes = kvGet i
-        match getRes with
+        match! KVStore.get i with
         | None -> return newResponse (sprintf "No contact with id %s" i) "404"
         | Some json -> 
-            do! kvDelete i 
+            do! KVStore.delete i 
             return newResponse json"200"
     }
 

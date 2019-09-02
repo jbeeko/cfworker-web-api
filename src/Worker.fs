@@ -1,6 +1,5 @@
 module Worker
 open Fable.Core
-open Fable.Import.Browser
 open WorkersInterop
 open System
 
@@ -9,7 +8,7 @@ open System
 // route variables, and subroutes. 
 let rec private routeRequest verb path req =
   match (verb, path) with
-  | GET, [] ->                  textResponse "Home sweet home!"
+  | GET, [] ->                  textResponse "Home sweet home!!"
   | GET, ["hello"] ->           textResponse (sprintf "Hello world from F# at: %A" DateTime.Now)
   | GET, ["bye"] ->             textResponse "Goodbye cruel world."
   | GET, ["hello"; "bye"] ->    textResponse "I say hello and the goodbye."
