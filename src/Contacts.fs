@@ -12,7 +12,6 @@ type Contact = {
 } with
     member x.Name = System.String.Join(" ", [|x.FirstName.Trim(); x.FamillyName.Trim()|])
 let  contactDecoder = Decode.Auto.generateDecoder<Contact>()
-let nsGet = KVStore.get "eac7f3cf92a24ebab3b900a86df7d787"
 
 
 // Handle the request returning a ServiceWorker Response promise
