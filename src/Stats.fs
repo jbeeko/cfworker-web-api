@@ -21,5 +21,4 @@ let stats (req: CFWRequest) =
       newResponse
         (sprintf "Some request stats:\n\nColo: %s Cntry: %s\nTLSVersion: %s TLSCiper: %s\nCount: %i Ave %f\nTime: %O"  cf.colo cf.country cf.tlsVersion cf.tlsCipher state.count state.ave DateTime.Now)
         "200"
-    resp.headers.append ("foo", "bar")
     resp |> wrap

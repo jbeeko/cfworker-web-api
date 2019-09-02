@@ -32,6 +32,9 @@ POST {{base}}/contacts
 }
 
 ###
+GET {{base}}/contacts
+
+###
 GET {{base}}/contacts/12
 
 ###
@@ -53,9 +56,6 @@ DELETE  {{base}}/contacts/12
 ###
 GET {{base}}/contacts/12
 
-
-###
-GET {{base}}/contacts
 
 
 

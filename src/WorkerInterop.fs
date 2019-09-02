@@ -1,14 +1,17 @@
-// Common JS Interop code and utility functions
-
 module WorkersInterop
-open System
+
 open System.Text.RegularExpressions
 
 open Fable.Core
-open Fable.Import.Browser
-open Fable.Import.JS
+open Fable.Core.JS
+open Browser.Types
+open Fetch
 
 
+type [<AllowNullLiteral>] FetchEvent =
+  inherit Event
+  abstract request: Request with get, set
+  abstract respondWith: response: U2<Promise<Response>, Response> -> Promise<Response>
 
 [<Emit("addEventListener('fetch', $0)")>]
 let addEventListener (e:FetchEvent->Promise<Response>) : unit = jsNative
@@ -29,7 +32,7 @@ and CFDetails = {
 let wrap x = promise {return x}
 
 let path (r:CFWRequest)=
-    match Regex.Split((Uri r.url).AbsolutePath.ToLower(), "\/") with
+    match Regex.Split((System.Uri r.url).AbsolutePath.ToLower(), "\/") with
     | [|"";""|] -> [||]   // this is for paths http://somthing.com/ and http://something.com
     | p -> p.[1..]        // becuase the first path element is always ""
     |> List.ofArray
