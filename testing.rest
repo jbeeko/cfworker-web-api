@@ -24,18 +24,18 @@ GET {{base}}/hello/bye/314512
 ###
 POST {{base}}/contacts
 
-{"id": "Bill",
-"FirstName":"Bill",
+{"id": "13",
+"FirstName":"Bob",
 "FamillyName": "Smith",
 "DOB": "Nov 11, 1963",
 "EMail": "foo@bar.com"
 }
 
 ###
-GET {{base}}/contacts
+GET {{base}}/contacts/1~
 
 ###
-GET {{base}}/contacts/12
+GET {{base}}/contacts/sue
 
 ###
 put {{base}}/contacts/12
@@ -48,7 +48,7 @@ put {{base}}/contacts/12
 }
 
 ###
-GET {{base}}/contacts/12
+GET {{base}}/contacts
 
 ###
 DELETE  {{base}}/contacts/12

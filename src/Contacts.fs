@@ -18,27 +18,37 @@ let  contactDecoder = Decode.Auto.generateDecoder<Contact>()
 let rec routeRequest (verb: Verb) (path: string list) (req: CFWRequest) =
     match (verb, path) with
     | GET, [i] ->   getContact req i
-    | GET, [] ->    getContacts req
+    | GET, [] ->    getContacts req None
     | POST, [] ->   postContact req
     | PUT, [i] ->   putContact req i
     | DELETE, [i] ->   deleteContact req i
     | _, _ ->       noHandler req
 
-and private getContact req i =
+and private getContacts req prefix  =
     promise {
-        match! KVStore.get i with 
-        | None -> return newResponse (sprintf "No contact with id %s" i) "404"
-        | Some json -> return newResponse json "200"
-    }
-and private getContacts req  =
-    promise {
-        let! resp = KVStore.keys (Some "Bi")
-        let keys = 
+        let! resp = KVStore.keys prefix
+        let! cntcts = 
             resp.keys
-            |> Array.map (fun k -> k.name)
-        return newResponse (keys.ToString()) "200"
+            |> Array.map (fun k -> KVStore.get k.name)
+            |> Promise.Parallel
+        let json = 
+             cntcts 
+             |> Array.filter (fun c -> c.IsSome)  
+        return newResponse (json.ToString()) "200"
     }
 
+and private getContact req i =
+    if i.EndsWith("~")
+    then
+        let prefix = Some (i.Substring(0, i.Length - 1))
+        getContacts req prefix
+    else
+        promise {
+            match! KVStore.get i with 
+            | None -> return newResponse (sprintf "No contact with id %s" i) "404"
+            | Some json -> return newResponse json "200"
+        }
+        
 and private postContact req  =
     promise {
          let! body = (req.text())

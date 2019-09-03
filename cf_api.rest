@@ -1,6 +1,6 @@
 @CF_BASE_URL = https://api.cloudflare.com/client/v4/
-@NS_ENV_ID = ff4ecc49ecb6478abdbf88995209c105
-@NS_RecRoom_ID = eac7f3cf92a24ebab3b900a86df7d787
+@NS_ENV_ID = 955bfd03a1814c108a75860dcca87588
+@NS_RecRoom_ID = 955bfd03a1814c108a75860dcca87588
  
 
 ### Test KV access with RecRoom =======================================================
@@ -13,7 +13,7 @@ Content-Type: text/plain
 test_value
 
 ### Get a key
-GET {{CF_BASE_URL}}accounts/{{CF_ACCOUNT_ID}}/storage/kv/namespaces/{{NS_RecRoom_ID}}/values/test
+GET {{CF_BASE_URL}}accounts/{{CF_ACCOUNT_ID}}/storage/kv/namespaces/{{NS_RecRoom_ID}}/values/Sue
 X-Auth-Email: {{CF_EMAIL}}
 X-Auth-Key: {{CF_KEY}}
 

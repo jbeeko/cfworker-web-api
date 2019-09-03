@@ -32,14 +32,12 @@ and CFDetails = {
 let wrap x = promise {return x}
 
 let path (r:CFWRequest)=
-    match Regex.Split((System.Uri r.url).AbsolutePath.ToLower(), "\/") with
-    | [|"";""|] -> [||]   // this is for paths http://somthing.com/ and http://something.com
-    | p -> p.[1..]        // becuase the first path element is always ""
+    Regex.Split((System.Uri r.url).AbsolutePath.ToLower(), "\/")
     |> List.ofArray
+    |> List.filter (fun s -> s.Length <> 0)
 
 let textResponse txt =
   newResponse txt "200" |> wrap
-
 
 type Verb =
     | GET

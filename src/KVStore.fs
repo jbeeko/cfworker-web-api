@@ -23,17 +23,12 @@ type ResultInfo = {
     cursor: string option
 }
 
-
-[<Emit("KVStore.list()")>]
-let keyListing() : JS.Promise<KeyQueryResponse> = jsNative
-
 [<Emit("KVStore.list($0)")>]
 let keyQuery(prefix) : JS.Promise<KeyQueryResponse> = jsNative
 
 let keys (prefix:string option) =
-    match prefix with
-    | Some x -> keyQuery {|prefix = x|}
-    | None -> keyListing()
+    keyQuery {|prefix = prefix|}
+    
 [<Emit("KVStore.get($0)")>]
 let get(key:string) : JS.Promise<string option> = jsNative
 
