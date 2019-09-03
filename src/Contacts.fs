@@ -1,6 +1,6 @@
 module Contacts
 open Thoth.Json
-
+open Fable.Core.JsInterop
 open WorkersInterop
 
 type Contact = {
@@ -32,9 +32,11 @@ and private getContact req i =
     }
 and private getContacts req  =
     promise {
-        // let! keys = kvKeyListing()
-        // let len = keys.success.ToString()
-        return newResponse "len" "200"
+        let! resp = KVStore.keys (Some "Bi")
+        let keys = 
+            resp.keys
+            |> Array.map (fun k -> k.name)
+        return newResponse (keys.ToString()) "200"
     }
 
 and private postContact req  =

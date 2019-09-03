@@ -12,8 +12,8 @@ type Key = {
     expiration: int option
 }
 
-type KeyQueryResponse1 = {
-    keys: Key list
+type KeyQueryResponse = {
+    keys: Key []
     list_complete: bool
     cursor: string option
 }
@@ -24,14 +24,16 @@ type ResultInfo = {
 }
 
 
-type KeyQueryResponse = {
-    result: Key list
-    success: bool
-    errors: string list
-    messages: string list
-    result_info: ResultInfo
-}
+[<Emit("KVStore.list()")>]
+let keyListing() : JS.Promise<KeyQueryResponse> = jsNative
 
+[<Emit("KVStore.list($0)")>]
+let keyQuery(prefix) : JS.Promise<KeyQueryResponse> = jsNative
+
+let keys (prefix:string option) =
+    match prefix with
+    | Some x -> keyQuery {|prefix = x|}
+    | None -> keyListing()
 [<Emit("KVStore.get($0)")>]
 let get(key:string) : JS.Promise<string option> = jsNative
 
