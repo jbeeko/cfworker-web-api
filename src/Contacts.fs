@@ -1,6 +1,5 @@
 module Contacts
 open Thoth.Json
-open Fable.Core.JsInterop
 open WorkersInterop
 
 type Contact = {
@@ -54,9 +53,13 @@ and private postContact req  =
          let! body = (req.text())
          let contact = Decode.fromString contactDecoder body
          match contact with
-         | Ok c -> 
-            do! KVStore.put c.id body
-            return newResponse body "200"
+         | Ok c ->
+            match! KVStore.get c.id with
+            | Some _ -> 
+                return newResponse ("Id exists: "+ c.id ) "400"
+            | None ->  
+                do! KVStore.put c.id body
+                return newResponse body "200"
          | Error e -> return newResponse (sprintf "Unable to process: %s because: %O" body e) "200"
     }
 
