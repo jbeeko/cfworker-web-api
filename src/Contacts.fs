@@ -56,7 +56,7 @@ and private postContact req  =
          | Ok c ->
             match! KVStore.get c.id with
             | Some _ -> 
-                return newResponse ("Id exists: "+ c.id ) "400"
+                return newResponse ("Id exists: "+ c.id ) "409"
             | None ->  
                 do! KVStore.put c.id body
                 return newResponse body "200"
