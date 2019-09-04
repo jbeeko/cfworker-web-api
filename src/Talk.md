@@ -21,16 +21,20 @@
 * Seriously I don't believe in using the best tool for the job
 * Spend the 
 
-### But really it's a dumb analogy
-[multi-too picture]
+### But really it's a misleading analogy
+[multi-tool picture]
 [tool box picture]
 * Programming languages are not 'a' tool. They **are** a tool box all by them selves. 
 * A good language is a well stocked tool box with quality well selected tools.
 * You don't need to have 10 other tool boxes, some impoverished, some cluttered etc.
 
-### Spent last 30 years using Smalltalk
-[Great tool box!]
-* Can learn to really use the tools in there
+### Focus on the wrong thing
+[To much on benefits of just the right language]
+[Not enought on value of true mastery of ones toolbox]
+* I can order breakfast in 15 languages
+[Also not enough on benefits of common skills in a group]
+* Spent last 30 years using Smalltalk. Great tool box!
+* Over time team can learn to really use the tools in there
 * Can use those tools for pretty much everything
     * Modeling
     * Application development
@@ -47,13 +51,17 @@
 * But of course I want to apply it everywhere, hence Fable.
 
 ### Our **DevOps** is out of control
+[Reason two]
 [Last two projects seemed to be 25% of effort]
 [Lots of tooling, almost as (more?)  complex than the application]
 [On the critical path]
+[Lots of mission critical knowledge]
 * Docker, Kubernetis
 * Arm templates, Teraform, 
 
 ### Cloudflare workers envoke a simpler time
+[Sometimes you need all the DevOps complexity] 
+* perhaps less often that we think
 [Service worker API in the cloud]
 * simple api 
 [Javascript (+WASM)]
@@ -77,6 +85,7 @@
 [Run compiler]
 [Paste into Worker pannel]
 * it works!
+* appache perf
 
 ## That's it really
 [hard work has been done by the community]
@@ -97,5 +106,33 @@
 * Great for secrets (environment vars for api)
 * Even for data (100 meg value size, billions of keys)
 
-### Azure
+## What is it good for?
+* Expiring keys perfect for todo list (at least mine)
+* Simple services
+* Idea is make a call rather than load a library and data (net work trade off)
+  * validation services
+  * character normalization
+  * Lists that need updateing
 
+* Simple IDE based on javascript version of Fable
+* Port a "static" site generator
+* Compiler service?
+
+## Cosmos DB
+[Most obvious target]
+[Program Functions, Stored Procedures and Triggers]
+* Said I would get back to that
+[Original motivation was moaning about this code]
+* really actually quite simple lazy concurrency control
+  * given a list of items and their etags when orignally read
+  * re-read from DB and ensure etags are unchanged
+  * update docs
+  * commit
+
+
+### But...
+[Signs the Interop will be harder]
+[Bigger API and very old style]
+* Babel targets may polyfill may handle?
+[MS recently updated external JS programming model]
+[waiting for the penny to drop on internal JS]
