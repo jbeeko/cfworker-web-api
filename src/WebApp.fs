@@ -3,9 +3,9 @@ module WebApp
 open WorkersInterop
 open WebAppUtils
 
-// WebApp router written as a match statement on the 
-// HTTP Verb and the route. It handles multi-part routes,
-// route variables, and subroutes. Copied from ReasonML router. 
+// WebApp router written as a match statement on the HTTP Verb and the route. 
+// It handles multi-part routes, route variables, and subroutes. Inspired by 
+// the ReasonML router. 
 let rec routeRequest verb path req =
   match (verb, path) with
   | GET, [] ->                  textResponse "Home sweet home!!"

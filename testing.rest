@@ -38,7 +38,7 @@ GET {{base}}/contacts/1~
 GET {{base}}/contacts/sue
 
 ###
-put {{base}}/contacts/12
+put {{base}}/contacts/111
 
 {"id": "12",
 "FirstName":"Johnny",
@@ -51,10 +51,10 @@ put {{base}}/contacts/12
 GET {{base}}/contacts
 
 ###
-DELETE {{base}}/contacts/12
+DELETE {{base}}/contacts/111
 
 ###
-GET {{base}}/contacts/12
+GET {{base}}/contacts/111
 
 
 
