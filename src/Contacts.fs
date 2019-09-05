@@ -1,6 +1,9 @@
 module Contacts
+
 open Thoth.Json
+
 open WorkersInterop
+open WebAppUtils
 
 type Contact = {
     id: string
@@ -13,10 +16,13 @@ type Contact = {
 let  contactDecoder = Decode.Auto.generateDecoder<Contact>()
 
 
-// Handle the request returning a ServiceWorker Response promise
+// Contact sub-WebApp. Just like the primary WebApp it gets the route path elements
+// passed to it and matches on parts. 
 let rec routeRequest (verb: Verb) (path: string list) (req: CFWRequest) =
     match (verb, path) with
-    | GET, [i] ->   getContact req i
+    | GET, [i] ->   if i.EndsWith("~") 
+                    then getContacts req (Some (i.Substring(0, i.Length - 1))) 
+                    else getContact req i
     | GET, [] ->    getContacts req None
     | POST, [] ->   postContact req
     | PUT, [i] ->   putContact req i

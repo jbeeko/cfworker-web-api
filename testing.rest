@@ -24,7 +24,7 @@ GET {{base}}/hello/bye/314512
 ###
 POST {{base}}/contacts
 
-{"id": "133",
+{"id": "111",
 "FirstName":"Bob",
 "FamillyName": "Smith",
 "DOB": "Nov 11, 1963",
@@ -51,7 +51,7 @@ put {{base}}/contacts/12
 GET {{base}}/contacts
 
 ###
-DELETE  {{base}}/contacts/12
+DELETE {{base}}/contacts/12
 
 ###
 GET {{base}}/contacts/12

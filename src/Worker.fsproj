@@ -5,8 +5,10 @@
   <ItemGroup>
     <Compile Include="WorkerInterop.fs" />
     <Compile Include="KVStore.fs" />
+    <Compile Include="WebAppUtils.fs" />
     <Compile Include="Stats.fs" />
     <Compile Include="Contacts.fs" />
+    <Compile Include="WebApp.fs" />
     <Compile Include="Worker.fs" />
   </ItemGroup>
   <ItemGroup>

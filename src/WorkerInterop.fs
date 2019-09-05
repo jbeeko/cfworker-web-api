@@ -39,27 +39,3 @@ let path (r:CFWRequest)=
 let textResponse txt =
   newResponse txt "200" |> wrap
 
-type Verb =
-    | GET
-    | POST
-    | PUT
-    | PATCH
-    | DELETE
-    | OPTION
-    | HEAD
-    | TRACE
-    | CONNECT
-    | UNDEFINED
-
-let verb (r:CFWRequest) =
-    match r.method.ToUpper() with
-    | "GET" -> GET
-    | "POST" -> POST
-    | "PUT" -> PUT
-    | "PATCH" -> PATCH
-    | "DELETE" -> DELETE
-    | "OPTION" -> OPTION
-    | "HEAD" -> HEAD
-    | "TRACE" -> TRACE
-    | "CONNECT" -> CONNECT
-    | _ -> UNDEFINED
