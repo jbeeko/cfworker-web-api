@@ -3,6 +3,8 @@
 #@base = http://localhost:3000
 @base = https://rec-room.io
 
+
+### Misc requests showing routing
 ###
 GET {{base}}
 
@@ -21,6 +23,16 @@ GET {{base}}/hello/bye
 ###
 GET {{base}}/hello/bye/314512
 
+### Contact CRUD ====================
+###
+GET {{base}}/contacts/111
+
+###
+DELETE {{base}}/contacts/111
+
+###
+GET {{base}}/contacts/111
+
 ###
 POST {{base}}/contacts
 
@@ -32,15 +44,12 @@ POST {{base}}/contacts
 }
 
 ###
-GET {{base}}/contacts/1~
-
-###
-GET {{base}}/contacts/sue
+GET {{base}}/contacts/111
 
 ###
 put {{base}}/contacts/111
 
-{"id": "12",
+{"id": "111",
 "FirstName":"Johnny",
 "FamillyName": "Smith",
 "DOB": "Nov 11, 1963",
@@ -48,16 +57,7 @@ put {{base}}/contacts/111
 }
 
 ###
+GET {{base}}/contacts/1~
+
+###
 GET {{base}}/contacts
-
-###
-DELETE {{base}}/contacts/111
-
-###
-GET {{base}}/contacts/111
-
-
-
-
-
-
