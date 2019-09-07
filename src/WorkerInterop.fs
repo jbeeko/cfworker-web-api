@@ -23,10 +23,12 @@ type CFWRequest =
     inherit Request
     abstract member cf : CFDetails
 and CFDetails = {
+    asn: string
+    colo: string
+    weight: string
     tlsVersion: string
     tlsCipher: string
     country: string
-    colo: string
 }
 
 let wrap x = promise {return x}

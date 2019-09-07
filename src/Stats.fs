@@ -19,6 +19,6 @@ let stats (req: CFWRequest) =
     state <- {ave  = sum/(float count); sum = sum + num; count = count}
     let resp =
       newResponse
-        (sprintf "Some request stats:\n\nColo: %s Cntry: %s\nTLSVersion: %s TLSCiper: %s\nCount: %i Ave %f\nTime: %O"  cf.colo cf.country cf.tlsVersion cf.tlsCipher state.count state.ave DateTime.Now)
+        (sprintf "Some request stats:\n\nColo: %s Cntry: %s\nASN: %s\nTLSVersion: %s TLSCiper: %s\nCount: %i Ave %f\nTime: %O"  cf.colo cf.country cf.asn cf.tlsVersion cf.tlsCipher state.count state.ave DateTime.Now)
         "200"
     resp |> wrap
