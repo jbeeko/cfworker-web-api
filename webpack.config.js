@@ -52,7 +52,7 @@ module.exports = env => {
                                         "loose": true,
                                         // Use babel-preset-env to generate JS compatible with latest Chrome V8
                                         "targets": {
-                                            "chrome": "73"
+                                            "chrome": "76"
                                         }
                                     }]
                                 ]
