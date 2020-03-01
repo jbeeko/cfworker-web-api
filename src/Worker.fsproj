@@ -12,9 +12,9 @@
     <Compile Include="Worker.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fable.Core" Version="3.0.0" />
+    <PackageReference Include="Fable.Core" Version="3.1.5" />
     <PackageReference Include="Fable.Browser.Event" Version="1.0.0" />
-    <PackageReference Include="Fable.Fetch" Version="2.1.0" />
-    <PackageReference Include="Thoth.Json" Version="3.3.0" />
+    <PackageReference Include="Fable.Fetch" Version="2.2.0" />
+    <PackageReference Include="Thoth.Json" Version="3.5.0" />
   </ItemGroup>
 </Project>
