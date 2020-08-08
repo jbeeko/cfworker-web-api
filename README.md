@@ -1,16 +1,13 @@
 # Work in Progress
-This branch will
-1. Remove the dependance on "cloudflare-workers-webpack-plugin": "^2.0.4" using the Cloudflare tool "Wrangler" instead
-2. Update to the latest version of the the Fable/Bable/Webpack tools
-3. Update the documentation to note the need to install and configure Wrangler
-4. Update the documentation to use `wrangler publish` rather than the prior `yarn env.....`
-5. Document deploying to the free *.workers.dev environment so there is no need to sign up for a paid account https://www.cloudflare.com/en-ca/products/cloudflare-workers/
+1. Document deploying to the free *.workers.dev environment so there is no need to sign up for a paid account https://www.cloudflare.com/en-ca/products/cloudflare-workers/. Get a free plan on jbeeko.outlook.com.
 
 
 # Cloudflare Workers in FSharp - II
 This is the second of several posts exploring FSharp servicing HTTP requests using the Cloudflare Workers infrastructure. Building on ["Hello World"](https://github.com/jbeeko/cfworker-hello-world), this post will show how to create a web API with routing, explore the Worker KVStore and provide tooling for dead simple **edit -> save -> deploy** workflow. It then puts that all together to create a Contact REST API. Finally a bit of benchmarking shows performance is still excellent.
 
-[**Skip this, take me to the hands on part.**](#tooling-and-workflow)
+> **NOTE:** Updated August 2020 to use the Cloudflare Workers CLI `wrangler` and deploy to the `workers.dev` route by default. This means you should not require a paid plan to replicate this worker.
+
+[**Skip the recap and description, take me to the hands on part.**](#tooling-and-workflow)
 
 ## Worker Recap
 As described in the first post, Cloudflare workers are "functions as a service". But rather than starting a VM or a container to run functions, workers are run in [Chrome V8 isolates](https://v8.dev/docs/embed) via the [`ServiceWorker`](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) API. The are written in JavaScript, any language that compiles to JavaScript or any language that compiles to [WASM](https://webassembly.org). [This post](https://blog.cloudflare.com/cloud-computing-without-containers/) is a good introduction to workers.
@@ -159,7 +156,9 @@ type RouteSpec = {
 and route by matching on `auth` where needed without breaking any code. The disadvantage is that the router does not look as clean and simple.
 
 ## Contact CRUD Operations
-Cloudflare Workers support a data store called [Workers KV](https://developers.cloudflare.com/workers/kv/). This is a globally distributed highly read-biased, eventually consistent key-value store. Key parameters are:
+> NOTE: Workers KV requires a paid plan. Trying to to access the KV Store with a free plan will result in an error. This demo will deploy to a free plan but will fail on the route `/contacts`'
+
+The Cloudflare Workers paid plan supports a data store called [Workers KV](https://developers.cloudflare.com/workers/kv/). This is a globally distributed highly read-biased, eventually consistent key-value store. Key parameters are:
 * 100,000 key reads per second
 * 1 write per second
 * global write and delete propagation within 10 seconds
@@ -226,57 +225,33 @@ postContact req  =
     }
 ```
 
-> NOTE: I've only used the Worker KV store with a deployment to Cloudflare itself and not with the Cloudworker local emulator.
-
-## Deploying To Cloudfare from CLI
-Part I [demonstrated](https://github.com/jbeeko/cfworker-hello-world/#deploying-manually) deploying a worker by pasting the JavaScript into an online editor. That works but better is deploying as part of a build process. Cloudflare offers 3 [options](https://developers.cloudflare.com/workers/deploying-workers/):
+## Deploying To Cloudfare from a CLI
+Part I [demonstrated](https://github.com/jbeeko/cfworker-hello-world/#deploying-manually) deploying a worker by pasting the JavaScript into an online editor. That works but better is deploying as part of a build process. Cloudflare offers several [options](https://developers.cloudflare.com/workers/deploying-workers/):
 * a Cloudflare HTTP API
 * the serverless framework
-* Terraform.
+* Terraform
+* The Cloudflare CLI `wrangler`
 
-The Terraform and serverless framework seem quite heavy for simple scenarios. The raw Cloudflare looks like it would be a chunk of work to integrate into the existing work flow.
+Cloudflare is investing ever more in Wrangler so that is the obvious way forward.
 
-Fortunately there is the excellent [cloudflare-worker-webpack-plugin](https://www.npmjs.com/package/cloudflare-worker-webpack-plugin) which does the hard work of integrating to the CF API and exposes that as a WebPack plugin. All we need to do is add a configuration section to our existing webpack.config.js and then this command:
-
-`yarn webpack --env.CF_KEY=$CF_KEY --env.CF_EMAIL=$CF_EMAIL`
-
-This will connect to Cloudflare, remove any existing routes, create routes and upload the `Workers.bndl.js` as the worker to run on the routes specified.
-
- The plugin configuration looks like this:
+**Configure Wrangler** - The prefered way to configure wrangle is via environment variables, e.g.
 ```
-new CloudflareWorkerPlugin(
-    // CF credentials for instructions on where to find them see:
-    // https://developers.cloudflare.com/workers/api/
-    env.CF_EMAIL,
-    env.CF_KEY,
-    {   // Options object, for addtional options see:
-        // https://www.npmjs.com/package/cloudflare-worker-webpack-plugin
-        site: `rec-room.io`,
-        enabledPatterns: `rec-room.io/*`,
-        clearRoutes: true,
-        verbose: true,
-        colors: true,
-        enabled: env.prod,
-        script: "worker.bndl.js"})
+# e.g.
+CF_ACCOUNT_ID=youraccountid
+CF_API_TOKEN=superlongapitoken
 ```
 
-Most of the configuration values are as you would expect: the routes, the site etc. A bit obscure are the two lines:
-```
-env.CF_EMAIL,
-env.CF_KEY,
-```
+How to obtain a `CF_API_TOKEN` is described [here](https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys#12345681)
 
-These are used to provide the `CLOUDFLARE_AUTH_EMAIL` and the `CLOUDFLARE_AUTH_KEY` respectively. This is done by using the WebPack [environment variables feature](https://webpack.js.org/guides/environment-variables/). The actual values can be provided on the command line directly or pulled from a user environment. In the command line show those values are defined in the `.bash_profile` file.
-
-> **NOTE:** Currently you can only deploy a worker to a domain you own that you have moved to Cloudflare. However you will soon be able to host worker on a subdomain of `workers.com`. So go read about it and [claim your workers.com domain now](https://blog.cloudflare.com/announcing-workers-dev/).
-
-> NOTE: The `cloudworker` local emulator can be configured to support Worker KV. However the CLI deployment works so well and is so fast that I've not bothered.
+Your worker can be deployed either to a subdomain of `workers.dev`. This is your only choice if you have a free account. If you have a paid account you can deploy to any of your custom domains. Paid account also get more CPU time per-invocation and have access the the KV Store.
 
 ### Debugging Workers
-Debugging support for Workers can be a bit tricky. If the `worker.bndl.js` file is deployed manually as [described](https://github.com/jbeeko/cfworker-hello-world#deploying-manually) here, the portal will show the JS console messages. But if deployed to Cloudflare environment then errors in the worker will result in a generic page with no debugging information. Various tips and tricks are discussed [here.](https://developers.cloudflare.com/workers/writing-workers/debugging-tips/)
+Debugging support for Workers can be a bit tricky. If the `worker.js` file is deployed manually as [described](https://github.com/jbeeko/cfworker-hello-world#deploying-manually) here, the portal will show the JS console messages. But if deployed to Cloudflare environment then errors in the worker will result in a generic page with no debugging information. Various tips and tricks are discussed [here.](https://developers.cloudflare.com/workers/writing-workers/debugging-tips/)
+
+There is Alpha support for local debugging of Workers using `wrangler dev`. This should improve the situation. Perhpas a subject for a future post.
 
 ## Protecting your API
-There are three approaches to protecting your API from abuse:
+There are three approaches to protecting your API from abuse.:
 
 **Add Rate Limiting:** You can enable rate limiting for your domain. In this case you will not be charged for the first 10,000 _unblocked_ requests. After that you will be charged %0.05/10,000 successful requests, or $5.00/1,000,000. Make sure you set the rate low enough or you may pay more this way than by leaving the API open.
 
@@ -286,7 +261,7 @@ There are three approaches to protecting your API from abuse:
 
 
 ## Scaling and Performance
-The simple "Hello World" worker described in part one had excellent performance. Out of the box it was able to serve about 5000 requests/sec with an average response time of 17ms.
+The simple "Hello World" worker described in part one had excellent performance. Out of the box deployed to a paid account it was able to serve about 5000 requests/sec with an average response time of 17ms.
 
 Querying the more realistic `/contacts` api with the command `ab -k -n 1000000 -c 100 https://rec-room.io/contacts/12` resulted in 1 million requests with a concurrency of 100. These were completed in 385 seconds at a rate of about 2594/requests per second. The mean response time was 38ms. Still very good.
 ```
@@ -341,58 +316,48 @@ The repository [https://github.com/jbeeko/cfworker-web-api](https://github.com/j
 
 ### Prerequisites
 This repository was developed under OSX. But you should be able to use Windows, OSX or Linux. The following tooling is assume to be installed before you clone the repository:
-* dotnetcore 2.1 - [see](https://dotnet.microsoft.com/download/dotnet-core/2.1)
-* FSharp - [see](https://fsharp.org/guides/mac-linux-cross-platform/). Note on OSX/Linux you will also need Mono- [see](https://www.mono-project.com/download/stable/#download-mac) or via Homebrew.
-* An FSharp editor - I recommend [VSCode](https://code.visualstudio.com/download) with the [Ionide](https://marketplace.visualstudio.com/items?itemName=Ionide.Ionide-fsharp) extension. But MS VisualStudio, JetBrains Rider or a number of others should work.
-* Node and Node Package Manager - [see](https://nodejs.org/en/download/) or via Homebrew
+* **dotnetcore 2.1** or greater - [see](https://dotnet.microsoft.com/download/dotnet-core/2.1)
+* **FSharp and an Editor** - [see](https://docs.microsoft.com/en-us/dotnet/fsharp/get-started/get-started-vscode).
+* **Node and Node Package Manager** - [see](https://nodejs.org/en/download/) or via Homebrew
 * Yarn - [see](https://www.npmjs.com/package/yarn) or via Homebrew
-* cloudworker - [see](https://github.com/dollarshaveclub/cloudworker). Install it globally with `npm -g install @dollarshaveclub/cloudworker`. **NOTE:** this would not install for me on widows. `npm` was not able to find `python`. A suggestion to do this: `npm --add-python-to-path='true' --debug install --global windows-build-tools` did not help.
+* **Wrangler** - [see](https://www.npmjs.com/package/@cloudflare/wrangler/v/1.4.0-rc.5).
 * **REST Client** - [see](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). With this installed you can open `testing.rest` and execute the test HTTP requests in the file. This is very nice to have for those using VSCode.
-
-With the exception of the REST Client VSCode extension these are the same pre-requisites as required by Part I.
 
 ### Building and Running
 
-**Clone**- the repository with: `git clone https://github.com/jbeeko/cfworker-web-api`
+**Get the code**- clode the repository with: `git clone https://github.com/jbeeko/cfworker-web-api`
 
-**Install**- dependancies and node modules with: `yarn install`
+**Install**- install dependancies and node modules with: `yarn install`
 
-**Build and deploy to Cloudflare** - at any time build and deploy with:
+**Configure Wrangler** - The prefered way to configure wrangle is via environment variables, e.g.
+```
+# e.g.
+CF_ACCOUNT_ID=youraccountid
+CF_API_TOKEN=superlongapitoken
+```
 
-`yarn webpack --env.CF_KEY=<your CF key> --env.CF_EMAIL=<your CF email>`
+How to obtain a `CF_API_TOKEN` is described [here](https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys#12345681)
 
-Assuming you have a Worker enabled Cloudflare account his will connect to Cloudflare, remove any existing routes, create routes and upload the `Workers.bndl.js` as the worker to run on the routes specified. There is no need to pre-configure workers in anyway.
+**Deploy** - build and deploy to Cloudflare with: `wrangler publish`
+
+Assuming you have a Worker enabled Cloudflare account and your credentials are correct this will connect to Cloudflare and upload `worker.js` as the worker to run on the path `<name>.<subdomain>.workers.dev`. `name` is the name of the worker specified in the `workers.toml` file. `subdomain` is your Cloudflare workers dev subdomain.
 
 If successful the terminal will show the following:
 ```
 ...
-Looking up zone-id for 'rec-room.io'
-Found! Zone-id for 'rec-room.io' is: c8e798e74ccfa6d1721483909288be0a
-Uploading worker...
-Success! Cloudflare worker deployed
-Removing existing routes: rec-room.io/*
+MBPro:cfworker-web-api $ wrangler publish
+fable-compiler 2.4.16
+fable: Compiled src/Worker.fsproj
+...
+fable: Compiled .fable/Thoth.Json.3.5.0/Types.fs
+✨  Built successfully, built project size is 24 KiB.
+✨  Successfully published your script to https://cfworker.<subdomain>.workers.dev
+JBEEKO-MBPro:cfworker-web-api joergbeekmann$
 ...
 ```
-The worker is now live on the routes defined in the `webpack.config.js` file. Notice that that the deploy step is only a second or so. In fact this is so good I've given up deploying to the local cloud worker emulator.
+The worker is now live on `https://cfworker.<subdomain>.workers.dev` file. Notice that that the deploy step is only a second or so. In fact this is so good I've given up deploying to the local cloud worker emulator.
 
-**Build and deploy locally**- after edits with: `yarn webpack`. In the terminal you will see:
-```
-yarn run v1.13.0
-$ /Users/jbeeko/cfworker-hello-world/node_modules/.bin/webpack
-fable-compiler 2.1.12
-...
-bunch of build messages suppresed here
-...
-✨  Done in 13.75s.
-```
-
-And in the cloudworker terminal window you will see the local worker has detected the new `Worker.bndl.js` file and reloaded:
-```
-Changes to the worker script detected - reloading...
-Successfully reloaded!
-```
-> NOTE - the cloudworker will support the Worker KV but additional configuration work is needed.
-
+> **NOTE**: Free Cloudflare accounts do not support the Workers KV Store.
 
 **Test**- If the VSCode REST Client extension is installed you can test the API by opening testing.rest. That file contains a series of http requests. They can be executed by clicking on the 'Send Request' hover link. If VSCode is not available use cURL PostMan or any other API test tool.
 
@@ -405,7 +370,8 @@ This installment started by refactoring the worker from Part I into multiple fil
 
 ## Resources
 [See the first post.](https://github.com/jbeeko/cfworker-hello-world/#resources)
-[Worker KV](https://developers.cloudflare.com/workers/kv/)
-[Deployment webpack plugin](https://www.npmjs.com/package/cloudflare-worker-webpack-plugin)
 
+[Worker KV](https://developers.cloudflare.com/workers/kv/)
+
+[Getting a CF Token](https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys#12345681)
 

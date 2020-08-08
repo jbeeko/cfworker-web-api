@@ -1,8 +1,9 @@
+#https://developers.cloudflare.com/workers/tooling/wrangler/configuration/
+
 name = "cfworker"
 type = "webpack"
-#route = "rec-room.io/loglo/*"
-#account_id = "afcd29d5eca25d0ec270459eca0d771e"
-zone_id = "c8e798e74ccfa6d1721483909288be0a"
+#route = "<only needed if deploying to your domain>"
+#zone_id = "<only needed if deploying to your domain>"
 workers_dev = true
 
 webpack_config = "webpack.config.js"
