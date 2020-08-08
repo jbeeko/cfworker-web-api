@@ -1,0 +1,8 @@
+name = "cfworker"
+type = "webpack"
+#route = "rec-room.io/loglo/*"
+#account_id = "afcd29d5eca25d0ec270459eca0d771e"
+zone_id = "c8e798e74ccfa6d1721483909288be0a"
+workers_dev = true
+
+webpack_config = "webpack.config.js"

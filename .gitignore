@@ -1,3 +1,4 @@
+# Fable/Ionide
 .DS_Store
 node_modules/
 .Fable/
@@ -6,4 +7,8 @@ bin/
 temp/
 yarn-error.log
 symbolCache.db
-worker.bndl.js
+
+# Wrangler/Workers
+/target
+/dist
+worker/
