@@ -1,0 +1,14 @@
+# Fable/Ionide
+.DS_Store
+node_modules/
+.Fable/
+obj/
+bin/
+temp/
+yarn-error.log
+symbolCache.db
+
+# Wrangler/Workers
+/target
+/dist
+worker/

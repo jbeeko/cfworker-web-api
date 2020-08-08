@@ -1,0 +1,49 @@
+@CF_BASE_URL = https://api.cloudflare.com/client/v4/
+@NS_ENV_ID = 955bfd03a1814c108a75860dcca87588
+@NS_RecRoom_ID = 955bfd03a1814c108a75860dcca87588
+ 
+
+### Test KV access with RecRoom =======================================================
+### Put a single key
+PUT {{CF_BASE_URL}}accounts/{{CF_ACCOUNT_ID}}/storage/kv/namespaces/{{NS_RecRoom_ID}}/values/test
+X-Auth-Email: {{CF_EMAIL}}
+X-Auth-Key: {{CF_KEY}}
+Content-Type: text/plain
+
+test_value
+
+### Get a key
+GET {{CF_BASE_URL}}accounts/{{CF_ACCOUNT_ID}}/storage/kv/namespaces/{{NS_RecRoom_ID}}/values/Sue
+X-Auth-Email: {{CF_EMAIL}}
+X-Auth-Key: {{CF_KEY}}
+
+### Delete a key
+DELETE  {{CF_BASE_URL}}accounts/{{CF_ACCOUNT_ID}}/storage/kv/namespaces/{{NS_RecRoom_ID}}/values/test
+X-Auth-Email: {{CF_EMAIL}}
+X-Auth-Key: {{CF_KEY}}
+
+### List keys
+GET {{CF_BASE_URL}}accounts/{{CF_ACCOUNT_ID}}/storage/kv/namespaces/{{NS_RecRoom_ID}}/keys
+X-Auth-Email: {{CF_EMAIL}}
+X-Auth-Key: {{CF_KEY}}
+
+
+
+
+### Configure ENV with secrets =======================================================
+### List keys
+GET {{CF_BASE_URL}}accounts/{{CF_ACCOUNT_ID}}/storage/kv/namespaces/{{NS_ENV_ID}}/keys
+X-Auth-Email: {{CF_EMAIL}}
+X-Auth-Key: {{CF_KEY}}
+
+### Bulk put keys
+PUT {{CF_BASE_URL}}accounts/{{CF_ACCOUNT_ID}}/storage/kv/namespaces/{{NS_ENV_ID}}/bulk
+X-Auth-Email: {{CF_EMAIL}}
+X-Auth-Key: {{CF_KEY}}
+Content-Type: application/json
+
+[
+    {"key":"CF_ACCOUNT_ID", "value":"{{CF_ACCOUNT_ID}}", "base64":false},
+    {"key":"CF_KEY", "value":"{{CF_KEY}}", "base64":false},
+    {"key":"CF_EMAIL", "value":"{{CF_EMAIL}}", "base64":false}
+]

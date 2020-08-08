@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="WorkerInterop.fs" />
+    <Compile Include="KVStore.fs" />
+    <Compile Include="WebAppUtils.fs" />
+    <Compile Include="Stats.fs" />
+    <Compile Include="Contacts.fs" />
+    <Compile Include="WebApp.fs" />
+    <Compile Include="Worker.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Fable.Core" Version="3.1.5" />
+    <PackageReference Include="Fable.Browser.Event" Version="1.0.0" />
+    <PackageReference Include="Fable.Fetch" Version="2.2.0" />
+    <PackageReference Include="Thoth.Json" Version="3.5.0" />
+  </ItemGroup>
+</Project>

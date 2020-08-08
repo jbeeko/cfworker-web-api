@@ -1,0 +1,19 @@
+{
+  "name": "fable-cf-worker",
+  "version": "0.0.2",
+  "description": "WebApp using CloudFlare Workers",
+  "repository": "git@github.com:JBeeko/fable-cf-worker.git",
+  "author": "Joerg Beekmann",
+  "license": "MIT",
+  "private": true,
+  "dependencies": { },
+  "devDependencies": {
+    "@babel/core": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "babel-loader": "^8.0.6",
+    "fable-compiler": "^2.4.16",
+    "fable-loader": "^2.1.9",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
+}
