@@ -1,11 +1,7 @@
-# Work in Progress
-1. Document deploying to the free *.workers.dev environment so there is no need to sign up for a paid account https://www.cloudflare.com/en-ca/products/cloudflare-workers/. Get a free plan on jbeeko.outlook.com.
-
-
 # Cloudflare Workers in FSharp - II
 This is the second of several posts exploring FSharp servicing HTTP requests using the Cloudflare Workers infrastructure. Building on ["Hello World"](https://github.com/jbeeko/cfworker-hello-world), this post will show how to create a web API with routing, explore the Worker KVStore and provide tooling for dead simple **edit -> save -> deploy** workflow. It then puts that all together to create a Contact REST API. Finally a bit of benchmarking shows performance is still excellent.
 
-> **NOTE:** Updated August 2020 to use the Cloudflare Workers CLI `wrangler` and deploy to the `workers.dev` route by default. This means you should not require a paid plan to replicate this worker.
+> **NOTE:** Updated August 2020 to use the Cloudflare Workers CLI `wrangler` and deploy to the `workers.dev` route by default. This means you should not require a paid plan to replicate this worker. However a free plan will not provide access to the CRUD operations for `/contacts`. This is because the Workers KV requires a paid plan. Trying to to access the KV Store with a free plan will result in an error. The rest of this demo should work.
 
 [**Skip the recap and description, take me to the hands on part.**](#tooling-and-workflow)
 
@@ -234,16 +230,20 @@ Part I [demonstrated](https://github.com/jbeeko/cfworker-hello-world/#deploying-
 
 Cloudflare is investing ever more in Wrangler so that is the obvious way forward.
 
-**Configure Wrangler** - The prefered way to configure wrangle is via environment variables, e.g.
+**Getting a Cloudflare Account**
+If you don't already have one you can sign up for CloudFlare for free; `cloudflare.com`. Free accounts will not let you have a custom domain. So once you have signed up go to the workers section and register for a `workers.dev` domain so you can deploy workers there.
+
+**Install and Configure Wrangler**
+To install wrangler [see](https://www.npmjs.com/package/@cloudflare/wrangler/v/1.4.0-rc.5). The prefered way to configure wrangle is via environment variables, e.g.
 ```
 # e.g.
 CF_ACCOUNT_ID=youraccountid
 CF_API_TOKEN=superlongapitoken
 ```
 
-How to obtain a `CF_API_TOKEN` is described [here](https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys#12345681)
+If you have an account, free or paid, you can obtain a  `CF_API_TOKEN` [here](https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys#12345681).
 
-Your worker can be deployed either to a subdomain of `workers.dev`. This is your only choice if you have a free account. If you have a paid account you can deploy to any of your custom domains. Paid account also get more CPU time per-invocation and have access the the KV Store.
+Your worker can be deployed either to a subdomain of `workers.dev`. This is your only choice if you have a free account. If you have a paid account you can deploy to any of your custom domains. By default the `wrangler.toml` file in this demo will deploy to `<name>.<subdomain>.workers.dev`. `name` is the name of the worker specified in the `workers.toml` file. `subdomain` is the Cloudflare workers dev subdomain you created after creating a Cloudflare account.
 
 ### Debugging Workers
 Debugging support for Workers can be a bit tricky. If the `worker.js` file is deployed manually as [described](https://github.com/jbeeko/cfworker-hello-world#deploying-manually) here, the portal will show the JS console messages. But if deployed to Cloudflare environment then errors in the worker will result in a generic page with no debugging information. Various tips and tricks are discussed [here.](https://developers.cloudflare.com/workers/writing-workers/debugging-tips/)
