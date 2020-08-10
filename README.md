@@ -1,7 +1,9 @@
 # Cloudflare Workers in FSharp - II
 This is the second of several posts exploring FSharp servicing HTTP requests using the Cloudflare Workers infrastructure. Building on ["Hello World"](https://github.com/jbeeko/cfworker-hello-world), this post will show how to create a web API with routing, explore the Worker KVStore and provide tooling for dead simple **edit -> save -> deploy** workflow. It then puts that all together to create a Contact REST API. Finally a bit of benchmarking shows performance is still excellent.
 
-> **NOTE:** Updated August 2020 to use the Cloudflare Workers CLI `wrangler` and deploy to the `workers.dev` route by default. This means you should not require a paid plan to replicate this worker. However a free plan will not provide access to the CRUD operations for `/contacts`. This is because the Workers KV requires a paid plan. Trying to to access the KV Store with a free plan will result in an error. The rest of this demo should work.
+> **NOTE:** Updated August 2020 to use the Cloudflare Workers CLI `wrangler` and deploy to the `workers.dev` route by default. It has also been updated to demonstrate how to use the Alpha release of the `wrangler dev` command. This command supports a local server, a file watcher and printing console messages to the local terminal.
+
+> **NOTE:** Cloudflare now supports a free tier for Workers. However the free tier will not provide access to the CRUD operations for `/contacts`. Trying to to access the KV Store with a free plan will result in an error. The rest of this demo should work.
 
 [**Skip the recap and description, take me to the hands on part.**](#tooling-and-workflow)
 
@@ -230,25 +232,32 @@ Part I [demonstrated](https://github.com/jbeeko/cfworker-hello-world/#deploying-
 
 Cloudflare is investing ever more in Wrangler so that is the obvious way forward.
 
+### Getting an Account and Configuration
+
 **Getting a Cloudflare Account**
-If you don't already have one you can sign up for CloudFlare for free; `cloudflare.com`. Free accounts will not let you have a custom domain. So once you have signed up go to the workers section and register for a `workers.dev` domain so you can deploy workers there.
+If you don't already have one you can sign up for CloudFlare for free; `cloudflare.com`. Free accounts will not let you have a custom domain. Instead once you have signed up go to the workers section and register for a `workers.dev` domain so you can deploy workers there.
 
 **Install and Configure Wrangler**
-To install wrangler [see](https://www.npmjs.com/package/@cloudflare/wrangler/v/1.4.0-rc.5). The prefered way to configure wrangle is via environment variables, e.g.
+This repo uses the Cloudflare CLI called Wranger for build and deployment. To install wrangler [see](https://www.npmjs.com/package/@cloudflare/wrangler/v/1.4.0-rc.5). The prefered way to configure wrangle is via environment variables, e.g.
 ```
 # e.g.
 CF_ACCOUNT_ID=youraccountid
 CF_API_TOKEN=superlongapitoken
 ```
 
-If you have an account, free or paid, you can obtain a  `CF_API_TOKEN` [here](https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys#12345681).
+If you have an account, free or paid, you can obtain a  `CF_API_TOKEN` [like this.](https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys#12345681)
 
-Your worker can be deployed either to a subdomain of `workers.dev`. This is your only choice if you have a free account. If you have a paid account you can deploy to any of your custom domains. By default the `wrangler.toml` file in this demo will deploy to `<name>.<subdomain>.workers.dev`. `name` is the name of the worker specified in the `workers.toml` file. `subdomain` is the Cloudflare workers dev subdomain you created after creating a Cloudflare account.
+
+ ### Three Ways to Deploy
+**Publish to preview** - This the simplest approach. The command `wranger dev` will will build the project and publish it to a _Preview Environment_ on the Cloudflare network, start a local server on `localhost:8787` and, create a connection bettween the terminal and the deployed worker ensuring exceptions and console logs are dumped into the terminal. If you have created an account and configured environment variables as above this should 'just work'.
+
+**Publish to workers.dev** - In this approach the command `wrangler publish` deploys the worker to the subdomain of `workers.dev` you created when you created your account. The worker will be live on the URL `https://<name of worker in wrangler.toml>.<subdomain>.workers.dev`. The `wrangler.toml` file in this demo supports this as it is.
+
+**Publish to your domain** - This assumes you have a paid account with a custom domain registered. To publish to a route on your custom domain you need to configure the `wrangler.toml` file as described [here](https://developers.cloudflare.com/workers/tooling/wrangler/configuration/). This is the only way to exercise the CRUD operations on the route `/contact`.
 
 ### Debugging Workers
-Debugging support for Workers can be a bit tricky. If the `worker.js` file is deployed manually as [described](https://github.com/jbeeko/cfworker-hello-world#deploying-manually) here, the portal will show the JS console messages. But if deployed to Cloudflare environment then errors in the worker will result in a generic page with no debugging information. Various tips and tricks are discussed [here.](https://developers.cloudflare.com/workers/writing-workers/debugging-tips/)
+Debugging support for Workers is rudimentary. The best appoach is to debug by deploying to to a preview environment with `wrangler dev`. This way you will see console messages in terminal. Various tips and tricks are discussed [here.](https://developers.cloudflare.com/workers/writing-workers/debugging-tips/)
 
-There is Alpha support for local debugging of Workers using `wrangler dev`. This should improve the situation. Perhpas a subject for a future post.
 
 ## Protecting your API
 There are three approaches to protecting your API from abuse.:
@@ -312,14 +321,14 @@ Percentage of the requests served within a certain time (ms)
 
 
 ## Tooling and Workflow
-The repository [https://github.com/jbeeko/cfworker-web-api](https://github.com/jbeeko/cfworker-web-api) will let you replicate the Hello World worker change it and build a modified version.
+The repository [https://github.com/jbeeko/cfworker-web-api](https://github.com/jbeeko/cfworker-web-api) will let you replicate the Worker change it and build a modified version.
 
 ### Prerequisites
 This repository was developed under OSX. But you should be able to use Windows, OSX or Linux. The following tooling is assume to be installed before you clone the repository:
 * **dotnetcore 2.1** or greater - [see](https://dotnet.microsoft.com/download/dotnet-core/2.1)
 * **FSharp and an Editor** - [see](https://docs.microsoft.com/en-us/dotnet/fsharp/get-started/get-started-vscode).
 * **Node and Node Package Manager** - [see](https://nodejs.org/en/download/) or via Homebrew
-* Yarn - [see](https://www.npmjs.com/package/yarn) or via Homebrew
+* **Yarn** - [see](https://www.npmjs.com/package/yarn) or via Homebrew
 * **Wrangler** - [see](https://www.npmjs.com/package/@cloudflare/wrangler/v/1.4.0-rc.5).
 * **REST Client** - [see](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). With this installed you can open `testing.rest` and execute the test HTTP requests in the file. This is very nice to have for those using VSCode.
 
@@ -338,11 +347,22 @@ CF_API_TOKEN=superlongapitoken
 
 How to obtain a `CF_API_TOKEN` is described [here](https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys#12345681)
 
-**Deploy** - build and deploy to Cloudflare with: `wrangler publish`
+**Preview** - start a local server that will handler your requests on `localhost:8787` with `wrangler dev`. This will also start a file watcher and re-load as needed. If successfull the terminal will show:
+```
+MBPro:cfworker-web-api $ wrangler dev
+`wrangler dev` is currently unstable and there are likely to be breaking changes!
+For this reason, we cannot yet recommend using `wrangler dev` for integration testing.
+Please submit any feedback here: https://github.com/cloudflare/wrangler/issues/1047
+fable-compiler 2.4.16
+fable: Compiled src/Worker.fsproj
+...
+fable: Compiled .fable/Thoth.Json.3.5.0/Decode.fs
+fable: Compiled .fable/Thoth.Json.3.5.0/Types.fs
+🌀  Detected changes...
+✨  Built successfully, built project size is 24 KiB.
+```
 
-Assuming you have a Worker enabled Cloudflare account and your credentials are correct this will connect to Cloudflare and upload `worker.js` as the worker to run on the path `<name>.<subdomain>.workers.dev`. `name` is the name of the worker specified in the `workers.toml` file. `subdomain` is your Cloudflare workers dev subdomain.
-
-If successful the terminal will show the following:
+**Deploy** - build and deploy to Cloudflare with: `wrangler publish`. Assuming you have a Worker enabled Cloudflare account and your credentials are correct this will connect to Cloudflare and upload `worker.js` as the worker to run based on the `worker.toml` file. By default this is `cfworker.<subdomain>.workers.dev`. Where `subdomain` is your Cloudflare workers dev subdomain. If successful the terminal will show the following:
 ```
 ...
 MBPro:cfworker-web-api $ wrangler publish
@@ -352,14 +372,12 @@ fable: Compiled src/Worker.fsproj
 fable: Compiled .fable/Thoth.Json.3.5.0/Types.fs
 ✨  Built successfully, built project size is 24 KiB.
 ✨  Successfully published your script to https://cfworker.<subdomain>.workers.dev
-JBEEKO-MBPro:cfworker-web-api joergbeekmann$
+MBPro:cfworker-web-api $
 ...
 ```
-The worker is now live on `https://cfworker.<subdomain>.workers.dev` file. Notice that that the deploy step is only a second or so. In fact this is so good I've given up deploying to the local cloud worker emulator.
+The worker is now live on `https://cfworker.<subdomain>.workers.dev` file.
 
-> **NOTE**: Free Cloudflare accounts do not support the Workers KV Store.
-
-**Test**- If the VSCode REST Client extension is installed you can test the API by opening testing.rest. That file contains a series of http requests. They can be executed by clicking on the 'Send Request' hover link. If VSCode is not available use cURL PostMan or any other API test tool.
+**Testing**- If the VSCode REST Client extension is installed you can test the API by opening testing.rest. That file contains a series of http requests. They can be executed by clicking on the 'Send Request' hover link. If VSCode is not available use cURL PostMan or any other API test tool.
 
 ![](resouces/contact-post.png)
 
@@ -375,3 +393,6 @@ This installment started by refactoring the worker from Part I into multiple fil
 
 [Getting a CF Token](https://support.cloudflare.com/hc/en-us/articles/200167836-Managing-API-Tokens-and-Keys#12345681)
 
+[Debugging Tips](https://developers.cloudflare.com/workers/writing-workers/debugging-tips/)
+
+[Wrangler](https://developers.cloudflare.com/workers/tooling/wrangler)

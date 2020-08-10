@@ -1,7 +1,7 @@
 @CF_BASE_URL = https://api.cloudflare.com/client/v4/
 @NS_ENV_ID = 955bfd03a1814c108a75860dcca87588
 @NS_RecRoom_ID = 955bfd03a1814c108a75860dcca87588
- 
+
 
 ### Test KV access with RecRoom =======================================================
 ### Put a single key
@@ -47,3 +47,7 @@ Content-Type: application/json
     {"key":"CF_KEY", "value":"{{CF_KEY}}", "base64":false},
     {"key":"CF_EMAIL", "value":"{{CF_EMAIL}}", "base64":false}
 ]
+
+
+###
+GET  http://localhost:8787
