@@ -383,7 +383,7 @@ The worker is now live on `https://cfworker.<subdomain>.workers.dev` file.
 
 
 ## Summary
-This installment started by refactoring the worker from Part I into multiple files. It then added a router based on FSharp match statements. Several different routing patterns were added as examples to show the flexibility of the approach. A Contact sub-app was created that takes a JSON post body to perform CURD operations on Contacts. Finally we added some support tooling for automated deployment of workers.
+This installment started by refactoring the worker from Part I into multiple files. It then added a router based on FSharp match statements. Several different routing patterns were added as examples to show the flexibility of the approach. A Contact sub-app was created that takes a JSON post body to perform CURD operations on Contacts. Finally we added some support tooling for automated deployment of workers includeing running a local server with a file watch facility.
 
 
 ## Resources
