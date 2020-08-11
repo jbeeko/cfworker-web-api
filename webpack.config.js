@@ -1,10 +1,4 @@
-const CloudflareWorkerPlugin = require('cloudflare-workers-webpack-plugin');
-
 module.exports = env => {
-    // var env = env
-    //     ? {deploy: true, CF_EMAIL: env.CF_EMAIL, CF_KEY: env.CF_KEY}
-    //     : {prod: false, CF_EMAIL: "", CF_KEY: ""}
-
     return {
         entry: {worker: ['./src/Worker.fsproj']},
         target: 'webworker',
