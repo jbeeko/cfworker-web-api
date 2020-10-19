@@ -1,12 +1,12 @@
 {
   "name": "fable-cf-worker",
   "version": "0.0.2",
-  "description": "WebApp using CloudFlare Workers",
-  "repository": "git@github.com:JBeeko/fable-cf-worker.git",
+  "description": "JSON WebAPI using CloudFlare Workers",
+  "repository": "https://github.com/jbeeko/cfworker-web-api",
   "author": "Joerg Beekmann",
   "license": "MIT",
   "private": true,
-  "dependencies": { },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
